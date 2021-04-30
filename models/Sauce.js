@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const sauceSchema = mongoose.Schema({
+const sauceSchema = mongoose.Schema({ //Schema: fonction mise à disposition par mongoose
   name: { type: String, required: true },
   manufacturer: { type: String, required: true },
   description: { type: String, required: true },
