@@ -1,11 +1,22 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
+const role = require('mongoose-role');
 
 const userSchema = mongoose.Schema({
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }
-});
+    password: { type: String, required: true },
+    role: {type: String, default: 'user'}
+}, { autoIndex: false });
 
 userSchema.plugin(uniqueValidator);
+userSchema.plugin(role, {
+    roles: ['public', 'user', 'admin'],
+    accessLevels: {
+		public: ['public', 'user', 'admin'],
+		anon: ['public'],
+		user: ['user', 'admin'],
+		admin: ['admin']
+	}
+});
 
 module.exports = mongoose.model('User', userSchema);
