@@ -60,7 +60,7 @@ exports.likeManagement = (req, res, next) => {
 				// Mise à jour des quantités de like/dislike
                 sauce.likes = sauce.usersLiked.length;
 			    sauce.dislikes = sauce.usersDisliked.length;
-			    sauce.save(sauce)
+			    sauce.save(sauce) //sauvegarde dans la base de données
 			    .then((sauce) => {
 				    res.status(200).json({message: "Done !"}) // OK: La requête a réussi. Post: La ressource décrivant le résultat de l'action est transmise dans le corps du message.
 			    })
