@@ -1,8 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser'); // Rends le corps de la requête plus facilement exploitable
 const mongoose = require('mongoose');
+const mongoSanitize = require('express-mongo-sanitize');
 const path = require('path');
+const helmet = require('helmet');
 
+const limiter = require('./middleware/rateLimit');
 const saucesRoutes = require('./routes/sauces');
 const userRoutes = require('./routes/user');
 
@@ -14,6 +17,8 @@ mongoose.connect('mongodb+srv://clothilde:motdepasse@Cluster0.ooshs.mongodb.net/
 
 const app = express(); // permet la création de l'application express
 
+app.use(helmet());
+
 app.use((req, res, next) => { // Ajout de ce middleware pour résoudre le problème de CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -21,7 +26,13 @@ app.use((req, res, next) => { // Ajout de ce middleware pour résoudre le probl�
     next();
 });
 
+app.use(express.urlencoded({extended: true}));
+
 app.use(express.json()); // Utilisation de la méthode body-parser pour transformer le corps de la requête en objet JS utilisable (JSON)
+
+app.use(mongoSanitize());
+
+app.use('/api/auth', limiter);
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/sauces', saucesRoutes);
